@@ -16,8 +16,8 @@ class Env(Enum):
 
 class DBConnection:
 
-    pg_db = {}
-    mongo_db = {}
+    postgres = {}
+    mongoDB = {}
 
     _instance = None
 
@@ -42,7 +42,7 @@ class DBConnection:
             postgresql.name = key
             for key, value in values.items():
                 postgresql.__setattr__(key, value)
-            self.pg_db[postgresql.name] = postgresql
+            self.postgres[postgresql.name] = postgresql
 
     def _load_mongo_config(self, data: dict):
         if data is None:
@@ -52,7 +52,7 @@ class DBConnection:
             mongodb.name = key
             for key, value in values.items():
                 mongodb.__setattr__(key, value)
-            self.mongo_db[mongodb.name] = mongodb
+            self.mongoDB[mongodb.name] = mongodb
 
     def load_db_credentials(self):
         BASE_DIR = Path(__file__).resolve().parent.parent
