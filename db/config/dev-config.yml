@@ -1,0 +1,25 @@
+raven:
+  name: raven
+  postgresql:
+    user: raven
+    password: Raven@123
+    host: localhost
+    port: 5432
+  mongodb:
+    user: raven
+    password: Raven@123
+    host: localhost
+    port: 27017
+
+xtract:
+  name: xtract
+  postgresql:
+    user: xtract
+    password: Xtract@123
+    host: localhost
+    port: 5432
+  mongodb:
+    user: xtract
+    password: Xtract@123
+    host: localhost
+    port: 27017
