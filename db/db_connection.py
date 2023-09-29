@@ -21,10 +21,10 @@ class DBConnection:
 
     _instance = None
 
-    def __new__(cls, env) -> 'DBConnection':
+    def __new__(cls) -> 'DBConnection':
         if not cls._instance:
             cls._instance = super(DBConnection, cls).__new__(cls)
-            cls._instance.env = Env[env]
+            cls._instance.env = os.environ('XTRACT_ENV')
             return cls._instance
         return cls._instance
 
@@ -54,7 +54,7 @@ class DBConnection:
                 mongodb.__setattr__(key, value)
             self.mongo_db[mongodb.name] = mongodb
 
-    def load_db(self):
+    def load_db_credentials(self):
         BASE_DIR = Path(__file__).resolve().parent.parent
         config_folder = os.path.join(BASE_DIR, 'db/config')
         config: dict
