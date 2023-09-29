@@ -1,7 +1,14 @@
 from abc import ABC, abstractmethod
+from enum import Enum
+
+class DB(Enum):
+    postgresql = 'postgresql'
+    mongodb = 'mongodb'
+    raven = 'raven'
+    xtract = 'xtract'
 
 
-class DB(ABC):
+class AbstractDB(ABC):
 
     @abstractmethod
     def connect(self, config: dict) -> None:

@@ -1,7 +1,14 @@
-from .abstract import DB
+from .abstract import AbstractDB
 
 
-class MongoDB(DB):
+class MongoDB(AbstractDB):
+
+    def __init__(self):
+        self.user: str
+        self.password: str
+        self.host: str
+        self.port: str
+        self.name: str
 
     def connect(self, config: dict) -> None:
         return super().connect(config)
