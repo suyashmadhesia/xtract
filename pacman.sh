@@ -1,6 +1,5 @@
 #!/bin/bash
 SCRIPT_DIR="$(pwd)/scripts"
-sudo chmod -R +x ${SCRIPT_DIR}
 ${SCRIPT_DIR}/env.sh
 SCR="$(pwd)/env/bin/activate"
 if [ -e "$SCR" ]
