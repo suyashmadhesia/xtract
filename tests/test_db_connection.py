@@ -136,7 +136,7 @@ class TestRavenConnection(TestCase):
         self.assertIs(connection, self.mock_engine.connect.return_value)
 
 
-    def test_disconnect(self):
+    def test_postgres_disconnect(self):
         self.raven_postgres.connect()
         self.raven_postgres.disconnect()
         self.mock_engine.connect.return_value.close.assert_called_once_with()
