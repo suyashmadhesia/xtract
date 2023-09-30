@@ -2,6 +2,7 @@ import os
 import yaml
 
 from unittest import TestCase
+from unittest.mock import Mock
 from pathlib import Path
 
 from db.db_connection import DBConnection
@@ -9,8 +10,10 @@ from db.abstract import *
 from db.postgres import Postgresql
 from db.mongo import MongoDB
 
+env = os.environ.get('XTRACT_ENV', 'dev')
 
-def load_config_file(env):
+
+def load_config_file():
     BASE_DIR = Path(__file__).resolve().parent.parent
     config_folder = os.path.join(BASE_DIR, 'db/config')
     config_dict: dict
@@ -20,21 +23,20 @@ def load_config_file(env):
     return config_dict
 
 
-class TestDBConnectionPostgres(TestCase):
+class TestDBConnectionPostgresConfig(TestCase):
 
     def setUp(self) -> None:
         self.db_connection = DBConnection()
         self.db_connection.load_db_credentials()
-        self.env = 'dev'  # TODO  check using environment variable
         return super().setUp()
 
     def test_db_config(self):
-        self.config_dict = load_config_file(self.env)
+        self.config_dict = load_config_file()
         self.assertEqual(type(self.config_dict), dict)
         self.assertIn('postgresql', self.config_dict)
 
     def test_postgresql_raven_config(self):
-        self.config_dict = load_config_file(self.env)
+        self.config_dict = load_config_file()
         postgres_config = self.config_dict['postgresql']
         self.assertEqual(
             type(self.db_connection.postgres['raven']), Postgresql)
@@ -51,7 +53,7 @@ class TestDBConnectionPostgres(TestCase):
         self.assertEqual('raven', self.db_connection.postgres['raven'].name)
 
     def test_postgresql_xtract_config(self):
-        self.config_dict = load_config_file(self.env)
+        self.config_dict = load_config_file()
         postgres_config = self.config_dict['postgresql']
         self.assertEqual(
             type(self.db_connection.postgres['xtract']), Postgresql)
@@ -68,21 +70,20 @@ class TestDBConnectionPostgres(TestCase):
         self.assertEqual('xtract', self.db_connection.postgres['xtract'].name)
 
 
-class TestConnectionMongo(TestCase):
+class TestConnectionMongoConfig(TestCase):
 
     def setUp(self) -> None:
         self.db_connection = DBConnection()
         self.db_connection.load_db_credentials()
-        self.env = 'dev'  # TODO  check using environment variable
         return super().setUp()
 
     def test_db_config(self):
-        self.config_dict = load_config_file(self.env)
+        self.config_dict = load_config_file()
         self.assertEqual(type(self.config_dict), dict)
         self.assertIn('mongodb', self.config_dict)
 
     def test_mongo_raven_config(self):
-        self.config_dict = load_config_file(self.env)
+        self.config_dict = load_config_file()
         mongo_config = self.config_dict['mongodb']
         self.assertEqual(
             type(self.db_connection.mongoDB['raven']), MongoDB)
@@ -99,7 +100,7 @@ class TestConnectionMongo(TestCase):
         self.assertEqual('raven', self.db_connection.mongoDB['raven'].name)
 
     def test_mongo_xtract_config(self):
-        self.config_dict = load_config_file(self.env)
+        self.config_dict = load_config_file()
         mongo_config = self.config_dict['mongodb']
         self.assertEqual(
             type(self.db_connection.mongoDB['xtract']), MongoDB)
@@ -114,3 +115,31 @@ class TestConnectionMongo(TestCase):
         self.assertEqual(
             mongo_config['xtract']['port'], self.db_connection.mongoDB['xtract'].port)
         self.assertEqual('xtract', self.db_connection.mongoDB['xtract'].name)
+
+
+class TestRavenConnection(TestCase):
+
+    def setUp(self) -> None:
+        self.db_connection = DBConnection()
+        self.db_connection.load_db_credentials()
+        self.raven_postgres = DBConnection.postgres[DB.raven.value]
+        self.mock_engine = Mock()
+        self.mock_connection = Mock()
+        self.raven_postgres._create_engine = Mock(
+            return_value=self.mock_engine)
+        return super().setUp()
+
+    def test_postgres_connection(self):
+        connection = self.raven_postgres.connect()
+        self.raven_postgres._create_engine.assert_called_once_with()
+        self.mock_engine.connect.assert_called_once_with()
+        self.assertIs(connection, self.mock_engine.connect.return_value)
+
+
+    def test_disconnect(self):
+        self.raven_postgres.connect()
+        self.raven_postgres.disconnect()
+        self.mock_engine.connect.return_value.close.assert_called_once_with()
+
+class TestXtractConnection(TestCase):
+    ...

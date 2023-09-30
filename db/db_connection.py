@@ -10,15 +10,15 @@ from .abstract import DB
 
 class DBConnection:
 
-    postgres : Dict[str, Postgresql] = {}
-    mongoDB : Dict[str, MongoDB] = {}
+    postgres: Dict[str, Postgresql] = {}
+    mongoDB: Dict[str, MongoDB] = {}
 
     _instance = None
 
     def __new__(cls) -> 'DBConnection':
         if not cls._instance:
             cls._instance = super(DBConnection, cls).__new__(cls)
-            cls._instance.env = os.environ.get('XTRACT_ENV') or 'dev'
+            cls._instance.env = os.environ.get('XTRACT_ENV', 'dev')
             return cls._instance
         return cls._instance
 
@@ -52,6 +52,6 @@ class DBConnection:
         BASE_DIR = Path(__file__).resolve().parent.parent
         config_folder = os.path.join(BASE_DIR, 'db/config')
         config: dict = self._load_config_file(
-                f'{config_folder}/{self.env}-config.yml')
+            f'{config_folder}/{self.env}-config.yml')
         self._load_postgres_config(config.get(DB.postgresql.value, None))
         self._load_mongo_config(config.get(DB.mongodb.value, None))

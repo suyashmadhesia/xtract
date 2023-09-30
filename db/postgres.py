@@ -46,6 +46,7 @@ class Postgresql(AbstractDB):
         self.host: str
         self.port: str
         self.name: str
+        self.connection: Connection
 
     def _create_engine(self) -> Engine:
         url = URL.create(drivername=self._drive_name, username=self.user,
