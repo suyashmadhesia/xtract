@@ -48,7 +48,6 @@ class MongoDB(AbstractDB):
         self.connection = connect(db=self.name, alias=self.name, username=self.user,
                                   password=self.password, host=self.host, port=self.port)
         return self.connection
-        return super().connect()
 
     def disconnect(self) -> None:
         disconnect(self.name)
