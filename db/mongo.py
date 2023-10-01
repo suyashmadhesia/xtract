@@ -1,6 +1,7 @@
 from mongoengine import connect, disconnect
 
 from .abstract import AbstractDB
+from logger import info_logger, error_logger
 
 
 class MongoDB(AbstractDB):
@@ -45,10 +46,20 @@ class MongoDB(AbstractDB):
         self.connection = None
 
     def connect(self) -> None:
-        self.connection = connect(db=self.name, alias=self.name, username=self.user,
-                                  password=self.password, host=self.host, port=self.port)
-        return self.connection
+        try:
+            info_logger.info(f'Connecting to database {self.name} Mongo.....')
+            self.connection = connect(db=self.name, alias=self.name, username=self.user,
+                                      password=self.password, host=self.host, port=self.port)
+            info_logger.info(f'Connected successfully to database')
+            return self.connection
+        except Exception as e:
+            error_logger.error(f'Unable to connect getting erorr {e}')
 
     def disconnect(self) -> None:
-        disconnect(self.name)
-        return super().disconnect()
+        try:
+            info_logger.info(f'Closing connection from {self.name} Mongo....')
+            disconnect(self.name)
+            info_logger.info(
+                f'Closed connection successfully from {self.name} Mongo')
+        except Exception as e:
+            error_logger.error(f'Unable to close connection {e}')

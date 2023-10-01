@@ -6,6 +6,7 @@ from typing import Dict
 from .postgres import Postgresql
 from .mongo import MongoDB
 from .abstract import DB
+from logger import error_logger, info_logger
 
 
 # TODO: Documentation for this class is left.
@@ -25,10 +26,15 @@ class DBConnection:
         return cls._instance
 
     def _load_config_file(self, path):
-        config_dict: dict
-        with open(path, 'r') as config:
-            config_dict = yaml.safe_load(config)
-        return config_dict
+        try:
+            info_logger.info(f'Loading configuration from {path}')
+            config_dict: dict
+            with open(path, 'r') as config:
+                config_dict = yaml.safe_load(config)
+            return config_dict
+        except Exception as e:
+            error_logger.error(f'Getting error while loading file {path} {e}')
+            raise e
 
     def _load_postgres_config(self, data: dict):
         if data is None:
@@ -57,3 +63,19 @@ class DBConnection:
             f'{config_folder}/{self.env}-config.yml')
         self._load_postgres_config(config.get(DB.postgresql.value, None))
         self._load_mongo_config(config.get(DB.mongodb.value, None))
+
+    # TODO: Implement unittests for these two functions.
+
+    @classmethod
+    def connect_dbs(cls):
+        for i in cls.postgres:
+            cls.postgres[i].connect()
+        for i in cls.mongoDB:
+            cls.mongoDB[i].connect()
+
+    @classmethod
+    def disconnect_dbs(cls):
+        for i in cls.postgres:
+            cls.postgres[i].disconnect()
+        for i in cls.mongoDB:
+            cls.mongoDB[i].disconnect()
