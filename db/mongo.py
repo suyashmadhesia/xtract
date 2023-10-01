@@ -1,3 +1,5 @@
+from mongoengine import connect, disconnect
+
 from .abstract import AbstractDB
 
 
@@ -40,9 +42,14 @@ class MongoDB(AbstractDB):
         self.host: str
         self.port: str
         self.name: str
+        self.connection = None
 
     def connect(self) -> None:
+        self.connection = connect(db=self.name, alias=self.name, username=self.user,
+                                  password=self.password, host=self.host, port=self.port)
+        return self.connection
         return super().connect()
 
     def disconnect(self) -> None:
+        disconnect(self.name)
         return super().disconnect()

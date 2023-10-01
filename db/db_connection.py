@@ -8,6 +8,8 @@ from .mongo import MongoDB
 from .abstract import DB
 
 
+# TODO: Documentation for this class is left.
+
 class DBConnection:
 
     postgres: Dict[str, Postgresql] = {}
