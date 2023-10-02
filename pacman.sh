@@ -1,4 +1,5 @@
 #!/bin/bash
+# TODO: convert this script into python script
 SCRIPT_DIR="$(pwd)/scripts"
 ${SCRIPT_DIR}/env.sh
 SCR="$(pwd)/env/bin/activate"

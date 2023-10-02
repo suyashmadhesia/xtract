@@ -17,7 +17,7 @@ class DB(Enum):
     postgresql = 'postgresql'
     mongodb = 'mongodb'
     raven = 'raven'
-    xtract = 'xtract'
+    xtract = 'xtract' # only used for mongoDB
 
 
 class AbstractDB(ABC):

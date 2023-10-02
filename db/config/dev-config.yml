@@ -4,11 +4,12 @@ postgresql:
     password: Raven@123
     host: localhost
     port: 5432
-  xtract:
-    user: xtract
-    password: Xtract@123
-    host: localhost
-    port: 5432
+  # TODO not sure to use this database need of discussion
+  # xtract:
+  #   user: xtract
+  #   password: Xtract@123
+  #   host: localhost
+  #   port: 5432
 
 
 mongodb:
