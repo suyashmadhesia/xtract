@@ -28,15 +28,20 @@ class TestDBConnectionPostgresConfig(TestCase):
     def setUp(self) -> None:
         self.db_connection = DBConnection()
         self.db_connection.load_db_credentials()
+        self.config_dict = load_config_file()
         return super().setUp()
 
+    def test_load_postgres_config(self):
+        with self.assertRaises(ValueError):
+            self.db_connection._load_postgres_config({})
+
+
     def test_db_config(self):
-        self.config_dict = load_config_file()
         self.assertEqual(type(self.config_dict), dict)
         self.assertIn('postgresql', self.config_dict)
+        
 
     def test_postgresql_raven_config(self):
-        self.config_dict = load_config_file()
         postgres_config = self.config_dict['postgresql']
         self.assertEqual(
             type(self.db_connection.postgres['raven']), Postgresql)
@@ -52,38 +57,24 @@ class TestDBConnectionPostgresConfig(TestCase):
             postgres_config['raven']['port'], self.db_connection.postgres['raven'].port)
         self.assertEqual('raven', self.db_connection.postgres['raven'].name)
 
-    def test_postgresql_xtract_config(self):
-        self.config_dict = load_config_file()
-        postgres_config = self.config_dict['postgresql']
-        self.assertEqual(
-            type(self.db_connection.postgres['xtract']), Postgresql)
-        self.assertIn('xtract', postgres_config)
-        self.assertEqual(type(postgres_config['xtract']), dict)
-        self.assertEqual(
-            postgres_config['xtract']['user'], self.db_connection.postgres['xtract'].user)
-        self.assertEqual(
-            postgres_config['xtract']['password'], self.db_connection.postgres['xtract'].password)
-        self.assertEqual(
-            postgres_config['xtract']['host'], self.db_connection.postgres['xtract'].host)
-        self.assertEqual(
-            postgres_config['xtract']['port'], self.db_connection.postgres['xtract'].port)
-        self.assertEqual('xtract', self.db_connection.postgres['xtract'].name)
-
 
 class TestConnectionMongoConfig(TestCase):
 
     def setUp(self) -> None:
         self.db_connection = DBConnection()
         self.db_connection.load_db_credentials()
+        self.config_dict = load_config_file()
         return super().setUp()
 
+    def test_load_mongo_config(self):
+        with self.assertRaises(ValueError):
+            self.db_connection._load_mongo_config({})
+
     def test_db_config(self):
-        self.config_dict = load_config_file()
         self.assertEqual(type(self.config_dict), dict)
         self.assertIn('mongodb', self.config_dict)
 
     def test_mongo_raven_config(self):
-        self.config_dict = load_config_file()
         mongo_config = self.config_dict['mongodb']
         self.assertEqual(
             type(self.db_connection.mongoDB['raven']), MongoDB)
@@ -100,7 +91,6 @@ class TestConnectionMongoConfig(TestCase):
         self.assertEqual('raven', self.db_connection.mongoDB['raven'].name)
 
     def test_mongo_xtract_config(self):
-        self.config_dict = load_config_file()
         mongo_config = self.config_dict['mongodb']
         self.assertEqual(
             type(self.db_connection.mongoDB['xtract']), MongoDB)

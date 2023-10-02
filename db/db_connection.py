@@ -37,23 +37,17 @@ class DBConnection:
             raise e
 
     def _load_postgres_config(self, data: dict):
-        if data is None:
-            return
-        for key, values in data.items():
-            postgresql = Postgresql()
-            postgresql.name = key
-            for k, value in values.items():
-                postgresql.__setattr__(k, value)
+        if len(data) == 0:
+            raise ValueError("No configuration found")
+        for _, value in data.items():
+            postgresql = Postgresql.from_dict(**value)
             self.postgres[postgresql.name] = postgresql
 
     def _load_mongo_config(self, data: dict):
-        if data is None:
-            return
-        for key, values in data.items():
-            mongodb = MongoDB()
-            mongodb.name = key
-            for k, value in values.items():
-                mongodb.__setattr__(k, value)
+        if len(data) == 0:
+            raise ValueError("No configuration found")
+        for _, value in data.items():
+            mongodb = MongoDB.from_dict(**value)
             self.mongoDB[mongodb.name] = mongodb
 
     def load_db_credentials(self):
@@ -67,14 +61,14 @@ class DBConnection:
     # TODO: Implement unittests for these two functions.
 
     @classmethod
-    def connect_dbs(cls):
+    def connect_all_database(cls):
         for i in cls.postgres:
             cls.postgres[i].connect()
         for i in cls.mongoDB:
             cls.mongoDB[i].connect()
 
     @classmethod
-    def disconnect_dbs(cls):
+    def disconnect_all_database(cls):
         for i in cls.postgres:
             cls.postgres[i].disconnect()
         for i in cls.mongoDB:

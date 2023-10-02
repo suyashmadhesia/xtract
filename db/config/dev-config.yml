@@ -1,11 +1,13 @@
 postgresql:
   raven:
+    name: raven
     user: raven
     password: Raven@123
     host: localhost
     port: 5432
   # TODO not sure to use this database need of discussion
   # xtract:
+  #   name: xtract
   #   user: xtract
   #   password: Xtract@123
   #   host: localhost
@@ -14,11 +16,13 @@ postgresql:
 
 mongodb:
   raven:
+    name: raven
     user: raven
     password: Raven@123
     host: localhost
     port: 27017
   xtract:
+    name: xtract
     user: xtract
     password: Xtract@123
     host: localhost

@@ -2,11 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy import Engine
 from sqlalchemy import Connection
 from sqlalchemy.engine import URL
+from dataclasses import dataclass
 
 from .abstract import AbstractDB
 from logger import info_logger, error_logger
 
 
+@dataclass
 class Postgresql(AbstractDB):
     '''
     Postgresql class which holds credentials and manage connections to
@@ -39,15 +41,17 @@ class Postgresql(AbstractDB):
         close database connection
     '''
 
+    user: str
+    password: str
+    host: str
+    port: str
+    name: str
+    connection: Connection = None
     _driver_name: str = 'postgresql'
 
-    def __init__(self):
-        self.user: str
-        self.password: str
-        self.host: str
-        self.port: str
-        self.name: str
-        self.connection: Connection
+    @classmethod
+    def from_dict(cls, **kwargs):
+        return cls(**kwargs)
 
     def _create_engine(self) -> Engine:
         info_logger.info(

@@ -1,9 +1,11 @@
 from mongoengine import connect, disconnect
+from dataclasses import dataclass
 
 from .abstract import AbstractDB
 from logger import info_logger, error_logger
 
 
+@dataclass
 class MongoDB(AbstractDB):
 
     '''
@@ -37,13 +39,16 @@ class MongoDB(AbstractDB):
         close database connection
     '''
 
-    def __init__(self):
-        self.user: str
-        self.password: str
-        self.host: str
-        self.port: str
-        self.name: str
-        self.connection = None
+    user: str
+    password: str
+    host: str
+    port: str
+    name: str
+    connection = None
+
+    @classmethod
+    def from_dict(cls, **kwargs):
+        return cls(**kwargs)
 
     def connect(self) -> None:
         try:
